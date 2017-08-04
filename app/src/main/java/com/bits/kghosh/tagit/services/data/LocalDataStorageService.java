@@ -1,4 +1,4 @@
-package com.bits.kghosh.tagit.services;
+package com.bits.kghosh.tagit.services.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;

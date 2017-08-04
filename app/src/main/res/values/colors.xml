@@ -7,5 +7,5 @@
     <color name="notification_success">#3CB371</color>
     <color name="notification_info">#1A496D</color>
     <color name="notification_warning">#c88d02</color>
-    <color name="notification_error">#FF0000</color>
+    <color name="notification_error">#E84353</color>
 </resources>

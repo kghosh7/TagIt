@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_config_tag_add"
+        android:checkable="false"
+        android:icon="@mipmap/nav_add"
+        android:title="@string/title_nav_add" />
+
+    <item
+        android:id="@+id/navigation_config_tag_save"
+        android:checkable="false"
+        android:icon="@mipmap/nav_save"
+        android:iconTint="@color/colorPrimary"
+        android:title="@string/title_nav_save" />
+
+    <item
+        android:id="@+id/navigation_config_tag_write"
+        android:checkable="false"
+        android:icon="@mipmap/nav_write"
+        android:title="@string/title_nav_write_to_tag" />
+
+</menu>
