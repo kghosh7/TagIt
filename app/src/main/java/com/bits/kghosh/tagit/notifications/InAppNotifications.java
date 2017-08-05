@@ -1,8 +1,9 @@
 package com.bits.kghosh.tagit.notifications;
 
 import android.content.Context;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 
 import com.bits.kghosh.tagit.R;
@@ -29,6 +30,19 @@ public class InAppNotifications {
         snackbar.show();
     }
 
+    public static void showSuccessMiddle(Context ctx, View view, String message) {
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction("Action", null);
+        View snackView = snackbar.getView();
+        snackView.setBackgroundColor(ctx.getResources().getColor(R.color.notification_success));
+
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackView.getLayoutParams();
+        params.gravity = Gravity.CENTER;
+        snackView.setLayoutParams(params);
+
+        snackbar.show();
+    }
+
     public static void showWarning(Context ctx, View view, String message) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                 .setAction("Action", null);
@@ -42,6 +56,19 @@ public class InAppNotifications {
                 .setAction("Action", null);
         View snackView = snackbar.getView();
         snackView.setBackgroundColor(ctx.getResources().getColor(R.color.notification_error));
+        snackbar.show();
+    }
+
+    public static void showErrorMiddle(Context ctx, View view, String message) {
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction("Action", null);
+        View snackView = snackbar.getView();
+        snackView.setBackgroundColor(ctx.getResources().getColor(R.color.notification_error));
+
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackView.getLayoutParams();
+        params.gravity = Gravity.CENTER;
+        snackView.setLayoutParams(params);
+
         snackbar.show();
     }
 }

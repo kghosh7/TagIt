@@ -27,6 +27,7 @@ public class SystemCommandHelper {
 
     private void initialize() {
         commandsMap.put(CommandsEnum.AIRPLANE_MODE, getAirplanceCommand());
+        commandsMap.put(CommandsEnum.BATTERY_SAVER, getBatterySaverCommand());
         commandsMap.put(CommandsEnum.BLUETOOTH, getBluetoothCommand());
         commandsMap.put(CommandsEnum.BRIGHTNESS, getBrightnessCommand());
         commandsMap.put(CommandsEnum.BUSINESS_CARD, getBusinessCardCommand());
@@ -35,6 +36,7 @@ public class SystemCommandHelper {
         commandsMap.put(CommandsEnum.LAUNCH_APPLICATION, getLaunchApplicationCommand());
         commandsMap.put(CommandsEnum.LAUNCH_MUSIC_PLAYER, getLaunchMusicCommand());
         commandsMap.put(CommandsEnum.LINK, getLinkCommand());
+        commandsMap.put(CommandsEnum.MOBILE_DATA, getMobileDataCommand());
         commandsMap.put(CommandsEnum.PLAIN_TEXT, getPlainTextCommand());
         commandsMap.put(CommandsEnum.SMS, getSMSCommand());
         commandsMap.put(CommandsEnum.SYSTEM_VOLUME, getSystemVolumeCommand());
@@ -203,6 +205,32 @@ public class SystemCommandHelper {
         CommandInfo commandInfo = new CommandInfo();
         commandInfo.setName("Wifi");
         commandInfo.setCommand(CommandsEnum.WIFI);
+        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
+
+        command.setCommandInfo(commandInfo);
+        command.setAllSubCommands(new ArrayList<SubCommand>());
+        return command;
+    }
+
+    private Command getMobileDataCommand() {
+        Command command = new Command();
+
+        CommandInfo commandInfo = new CommandInfo();
+        commandInfo.setName("Mobile Data");
+        commandInfo.setCommand(CommandsEnum.MOBILE_DATA);
+        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
+
+        command.setCommandInfo(commandInfo);
+        command.setAllSubCommands(new ArrayList<SubCommand>());
+        return command;
+    }
+
+    private Command getBatterySaverCommand() {
+        Command command = new Command();
+
+        CommandInfo commandInfo = new CommandInfo();
+        commandInfo.setName("Battery Saver");
+        commandInfo.setCommand(CommandsEnum.BATTERY_SAVER);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);

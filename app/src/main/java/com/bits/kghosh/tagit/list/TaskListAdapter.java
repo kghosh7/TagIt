@@ -17,7 +17,7 @@ import java.util.List;
  * Created by kghosh on 04-Aug-2017.
  */
 
-public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.MyViewHolder> {
+public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.MyViewHolder> {
 
     private List<Command> itemList;
 
@@ -34,7 +34,7 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
     }
 
 
-    public CommandListAdapter(List<Command> moviesList) {
+    public TaskListAdapter(List<Command> moviesList) {
         this.itemList = moviesList;
     }
 
@@ -63,8 +63,6 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
         switch (commandType) {
             case AIRPLANE_MODE:
                 return R.mipmap.airplane;
-            case BATTERY_SAVER:
-                return R.mipmap.battery;
             case BLUETOOTH:
                 return R.mipmap.bluetooth;
             case BRIGHTNESS:
@@ -81,8 +79,6 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
                 return R.mipmap.music_player;
             case LINK:
                 return R.mipmap.link;
-            case MOBILE_DATA:
-                return R.mipmap.data;
             case PLAIN_TEXT:
                 return R.mipmap.plain_text;
             case SMS:
