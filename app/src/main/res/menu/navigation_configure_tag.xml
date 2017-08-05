@@ -11,7 +11,6 @@
         android:id="@+id/navigation_config_tag_save"
         android:checkable="false"
         android:icon="@mipmap/nav_save"
-        android:iconTint="@color/colorPrimary"
         android:title="@string/title_nav_save" />
 
     <item

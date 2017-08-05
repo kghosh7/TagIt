@@ -10,7 +10,7 @@ public class Tag {
     private final long id;
     private String name;
     private String description;
-    private List<SystemConfig> configs;
+    private List<TaskConfig> configs;
 
     public Tag() {
         this.id = System.currentTimeMillis();
@@ -19,12 +19,6 @@ public class Tag {
     public Tag(String name) {
         this.id = System.currentTimeMillis();
         this.name = name;
-
-        SystemConfig config = new SystemConfig("Wifi", "on");
-        SystemConfig anotherConfig = new SystemConfig("Playlist", "workout");
-
-        this.configs.add(config);
-        this.configs.add(anotherConfig);
     }
 
     public String getName() {
@@ -43,11 +37,11 @@ public class Tag {
         this.description = description;
     }
 
-    public List<SystemConfig> getConfigs() {
+    public List<TaskConfig> getConfigs() {
         return configs;
     }
 
-    public void setConfigs(List<SystemConfig> configs) {
+    public void setConfigs(List<TaskConfig> configs) {
         this.configs = configs;
     }
 }

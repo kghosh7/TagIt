@@ -8,4 +8,11 @@
     tools:context="com.bits.kghosh.tagit.ConfigureTagActivity"
     tools:showIn="@layout/activity_configure_tag">
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/commandListView"
+        android:nestedScrollingEnabled="false"
+        android:paddingBottom="@dimen/margin_till_bottom_nav"></android.support.v7.widget.RecyclerView>
+
 </android.support.v4.widget.NestedScrollView>
