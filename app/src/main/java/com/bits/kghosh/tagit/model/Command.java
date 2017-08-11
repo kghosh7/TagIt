@@ -9,7 +9,8 @@ import java.util.List;
 public class Command {
 
     private CommandInfo commandInfo;
-    private List<SubCommand> allSubCommands;
+    private List<SubCommand> subCommands;
+    private CommandTypeEnum type = CommandTypeEnum.ACTION;
 
     public CommandInfo getCommandInfo() {
         return commandInfo;
@@ -19,11 +20,19 @@ public class Command {
         this.commandInfo = commandInfo;
     }
 
-    public List<SubCommand> getAllSubCommands() {
-        return allSubCommands;
+    public List<SubCommand> getSubCommands() {
+        return subCommands;
     }
 
-    public void setAllSubCommands(List<SubCommand> allSubCommands) {
-        this.allSubCommands = allSubCommands;
+    public void setSubCommands(List<SubCommand> subCommands) {
+        this.subCommands = subCommands;
+    }
+
+    public CommandTypeEnum getType() {
+        return type;
+    }
+
+    public void setType(CommandTypeEnum type) {
+        this.type = type;
     }
 }

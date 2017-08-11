@@ -13,15 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.bits.kghosh.tagit.command.SystemCommandHelper;
 import com.bits.kghosh.tagit.list.TagListAdapter;
 import com.bits.kghosh.tagit.list.listeners.RecyclerItemClickListener;
+import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.Tag;
-import com.bits.kghosh.tagit.model.TaskConfig;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -44,8 +44,8 @@ public class HomeActivity extends AppCompatActivity {
             InAppNotifications.showError(this, masterView, "NFC not available");
         }
 
-        initializeClickHandlers();
         initializeList();
+        initializeClickHandlers();
     }
 
     private void initializeClickHandlers() {
@@ -62,7 +62,6 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(HomeActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //int itemPosition = recyclerView.getChildLayoutPosition(view);
                 Tag item = mAdapter.getItem(position);
                 TagDTO tagDTO = TagDTO.getInstance();
                 tagDTO.setTagToTransfer(item);
@@ -74,7 +73,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeList() {
-        SystemCommandHelper commandHelper = new SystemCommandHelper();
         mAdapter = new TagListAdapter(HomeActivity.this, getData());
         recyclerView = (RecyclerView) findViewById(R.id.tagListView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -90,50 +88,58 @@ public class HomeActivity extends AppCompatActivity {
         Tag tag1 = new Tag();
         tag1.setName("My Car");
         tag1.setDescription("Maximizes volume, enables vibration, starts Google Maps and navigates to office, starts Music player and plays my favorite playlist");
-        List<TaskConfig> taskConfigs = new ArrayList<>();
-        TaskConfig config1 = new TaskConfig();
-        taskConfigs.add(config1);
-        taskConfigs.add(config1);
-        taskConfigs.add(config1);
-        taskConfigs.add(config1);
-        tag1.setConfigs(taskConfigs);
+        tag1.setCreatedAt(new Date().getTime());
+        tag1.setUpdatedAt(new Date().getTime());
+        List<Command> tasks = new ArrayList<>();
+        Command config1 = new Command();
+        tasks.add(config1);
+        tasks.add(config1);
+        tasks.add(config1);
+        tasks.add(config1);
+        tag1.setCommands(tasks);
         tags.add(tag1);
 
         Tag tag2 = new Tag();
         tag2.setName("Bedtime");
         tag2.setDescription("Puts phone on silent, maximizes alarm volume, turns off data, something else, something else and so on");
-        List<TaskConfig> taskConfigs2 = new ArrayList<>();
-        TaskConfig config2 = new TaskConfig();
+        tag2.setCreatedAt(new Date().getTime());
+        tag2.setUpdatedAt(new Date().getTime());
+        List<Command> taskConfigs2 = new ArrayList<>();
+        Command config2 = new Command();
         taskConfigs2.add(config2);
         taskConfigs2.add(config2);
         taskConfigs2.add(config2);
-        tag2.setConfigs(taskConfigs2);
+        tag2.setCommands(taskConfigs2);
         tags.add(tag2);
 
         Tag tag3 = new Tag();
         tag3.setName("Good Morning");
         tag3.setDescription("All volumes maximum, turns Wifi on, turns Data on");
-        List<TaskConfig> taskConfigs3 = new ArrayList<>();
-        TaskConfig config3 = new TaskConfig();
+        tag3.setCreatedAt(new Date().getTime());
+        tag3.setUpdatedAt(new Date().getTime());
+        List<Command> taskConfigs3 = new ArrayList<>();
+        Command config3 = new Command();
         taskConfigs3.add(config3);
         taskConfigs3.add(config3);
         taskConfigs3.add(config3);
         taskConfigs3.add(config3);
         taskConfigs3.add(config3);
-        tag3.setConfigs(taskConfigs3);
+        tag3.setCommands(taskConfigs3);
         tags.add(tag3);
 
         Tag tag4 = new Tag();
         tag4.setName("Back home");
         tag4.setDescription("All volumes maximum, turns Wifi on, turns Data off, some other task, another task, yet another task");
-        List<TaskConfig> taskConfigs4 = new ArrayList<>();
-        TaskConfig config4 = new TaskConfig();
+        tag4.setCreatedAt(new Date().getTime());
+        tag4.setUpdatedAt(new Date().getTime());
+        List<Command> taskConfigs4 = new ArrayList<>();
+        Command config4 = new Command();
         taskConfigs4.add(config4);
         taskConfigs4.add(config4);
         taskConfigs4.add(config4);
         taskConfigs4.add(config4);
         taskConfigs4.add(config4);
-        tag4.setConfigs(taskConfigs4);
+        tag4.setCommands(taskConfigs4);
         tags.add(tag4);
 
         return tags;

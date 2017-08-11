@@ -10,7 +10,9 @@ public class Tag {
     private final long id;
     private String name;
     private String description;
-    private List<TaskConfig> configs;
+    private List<Command> commands;
+    private long createdAt;
+    private long updatedAt;
 
     public Tag() {
         this.id = System.currentTimeMillis();
@@ -37,11 +39,27 @@ public class Tag {
         this.description = description;
     }
 
-    public List<TaskConfig> getConfigs() {
-        return configs;
+    public List<Command> getCommands() {
+        return commands;
     }
 
-    public void setConfigs(List<TaskConfig> configs) {
-        this.configs = configs;
+    public void setCommands(List<Command> commands) {
+        this.commands = commands;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

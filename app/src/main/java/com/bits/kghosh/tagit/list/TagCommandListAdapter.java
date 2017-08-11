@@ -1,5 +1,6 @@
 package com.bits.kghosh.tagit.list;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,10 @@ import java.util.List;
  * Created by kghosh on 04-Aug-2017.
  */
 
-public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.MyViewHolder> {
+public class TagCommandListAdapter extends RecyclerView.Adapter<TagCommandListAdapter.MyViewHolder> {
 
     private List<Command> itemList;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, description;
@@ -27,21 +29,22 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.MyView
 
         public MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.system_command_title);
-            description = (TextView) view.findViewById(R.id.system_command_desc);
-            icon = (ImageView) view.findViewById(R.id.system_command_icon);
+            title = (TextView) view.findViewById(R.id.task_title);
+            description = (TextView) view.findViewById(R.id.task_desc);
+            icon = (ImageView) view.findViewById(R.id.task_icon);
         }
     }
 
 
-    public TaskListAdapter(List<Command> moviesList) {
+    public TagCommandListAdapter(Context ctx, List<Command> moviesList) {
+        this.context = ctx;
         this.itemList = moviesList;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_command, parent, false);
+                .inflate(R.layout.list_item_task, parent, false);
 
         return new MyViewHolder(itemView);
     }
@@ -73,6 +76,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.MyView
                 return R.mipmap.email;
             case GEOLOCATION:
                 return R.mipmap.location;
+            case GOOGLE_PLAY:
+                return R.mipmap.google_play;
             case LAUNCH_APPLICATION:
                 return R.mipmap.application;
             case LAUNCH_MUSIC_PLAYER:

@@ -1,26 +1,21 @@
 package com.bits.kghosh.tagit;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.bits.kghosh.tagit.command.SystemCommandHelper;
 import com.bits.kghosh.tagit.list.CommandListAdapter;
-import com.bits.kghosh.tagit.model.Command;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.bits.kghosh.tagit.model.CommandTypeEnum;
 
 public class CommandListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private CommandListAdapter mAdapter;
+    private CommandTypeEnum commandType = CommandTypeEnum.TASK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +24,13 @@ public class CommandListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Pick a command");
+        initialize();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getPageTitle(this.commandType));
 
         SystemCommandHelper commandHelper = new SystemCommandHelper();
-        mAdapter = new CommandListAdapter(commandHelper.getAllSystemCommands());
+        mAdapter = new CommandListAdapter(commandHelper.getAllSystemCommands(this.commandType));
         recyclerView = (RecyclerView) findViewById(R.id.commandListView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -51,4 +39,22 @@ public class CommandListActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
+    private void initialize() {
+        String type = getIntent().getStringExtra("TYPE");
+        try {
+            commandType = CommandTypeEnum.valueOf(type);
+        } catch (IllegalArgumentException iae) {
+            commandType = CommandTypeEnum.TASK;
+        }
+    }
+
+    private String getPageTitle(CommandTypeEnum commandType) {
+        switch (commandType) {
+            case ACTION:
+                return "Pick an action";
+            case TASK:
+            default:
+                return "Pick a task";
+        }
+    }
 }

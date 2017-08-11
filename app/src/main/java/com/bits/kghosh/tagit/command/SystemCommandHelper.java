@@ -2,6 +2,7 @@ package com.bits.kghosh.tagit.command;
 
 import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.CommandInfo;
+import com.bits.kghosh.tagit.model.CommandTypeEnum;
 import com.bits.kghosh.tagit.model.CommandsEnum;
 import com.bits.kghosh.tagit.model.SubCommand;
 
@@ -16,31 +17,55 @@ import java.util.Map;
 
 public class SystemCommandHelper {
 
-    private Map<CommandsEnum, Command> commandsMap = new LinkedHashMap<>();
+    private Map<CommandsEnum, Command> tasksMap = new LinkedHashMap<>();
+    private Map<CommandsEnum, Command> actionsMap = new LinkedHashMap<>();
+
+    public SystemCommandHelper() {
+        initialize();
+    }
 
     public List<Command> getAllSystemCommands() {
-        initialize();
-
-        List<Command> commands = new ArrayList<>(commandsMap.values());
+        List<Command> commands = new ArrayList<>(tasksMap.values());
+        commands.addAll(new ArrayList<>(actionsMap.values()));
         return commands;
     }
 
+    public List<Command> getAllSystemCommands(CommandTypeEnum type) {
+        switch (type) {
+            case ACTION:
+                return new ArrayList<>(actionsMap.values());
+            case TASK:
+            default:
+                return new ArrayList<>(tasksMap.values());
+        }
+    }
+
+    public Command getSystemCommand(CommandsEnum commandType) {
+        Command command = tasksMap.get(commandType);
+        if (command == null) {
+            command = actionsMap.get(commandType);
+        }
+        return command;
+    }
+
     private void initialize() {
-        commandsMap.put(CommandsEnum.AIRPLANE_MODE, getAirplanceCommand());
-        commandsMap.put(CommandsEnum.BATTERY_SAVER, getBatterySaverCommand());
-        commandsMap.put(CommandsEnum.BLUETOOTH, getBluetoothCommand());
-        commandsMap.put(CommandsEnum.BRIGHTNESS, getBrightnessCommand());
-        commandsMap.put(CommandsEnum.BUSINESS_CARD, getBusinessCardCommand());
-        commandsMap.put(CommandsEnum.EMAIL, getEmailCommand());
-        commandsMap.put(CommandsEnum.GEOLOCATION, getGeolocationCommand());
-        commandsMap.put(CommandsEnum.LAUNCH_APPLICATION, getLaunchApplicationCommand());
-        commandsMap.put(CommandsEnum.LAUNCH_MUSIC_PLAYER, getLaunchMusicCommand());
-        commandsMap.put(CommandsEnum.LINK, getLinkCommand());
-        commandsMap.put(CommandsEnum.MOBILE_DATA, getMobileDataCommand());
-        commandsMap.put(CommandsEnum.PLAIN_TEXT, getPlainTextCommand());
-        commandsMap.put(CommandsEnum.SMS, getSMSCommand());
-        commandsMap.put(CommandsEnum.SYSTEM_VOLUME, getSystemVolumeCommand());
-        commandsMap.put(CommandsEnum.WIFI, getWifiCommand());
+        tasksMap.put(CommandsEnum.AIRPLANE_MODE, getAirplanceCommand());
+        tasksMap.put(CommandsEnum.BATTERY_SAVER, getBatterySaverCommand());
+        tasksMap.put(CommandsEnum.BLUETOOTH, getBluetoothCommand());
+        tasksMap.put(CommandsEnum.BRIGHTNESS, getBrightnessCommand());
+        tasksMap.put(CommandsEnum.LAUNCH_APPLICATION, getLaunchApplicationCommand());
+        tasksMap.put(CommandsEnum.LAUNCH_MUSIC_PLAYER, getLaunchMusicCommand());
+        tasksMap.put(CommandsEnum.MOBILE_DATA, getMobileDataCommand());
+        tasksMap.put(CommandsEnum.SYSTEM_VOLUME, getSystemVolumeCommand());
+        tasksMap.put(CommandsEnum.WIFI, getWifiCommand());
+
+        actionsMap.put(CommandsEnum.BUSINESS_CARD, getBusinessCardCommand());
+        actionsMap.put(CommandsEnum.EMAIL, getEmailCommand());
+        actionsMap.put(CommandsEnum.GEOLOCATION, getGeolocationCommand());
+        actionsMap.put(CommandsEnum.GOOGLE_PLAY, getGooglePlayLaunchCommand());
+        actionsMap.put(CommandsEnum.SMS, getSMSCommand());
+        actionsMap.put(CommandsEnum.PLAIN_TEXT, getPlainTextCommand());
+        actionsMap.put(CommandsEnum.LINK, getLinkCommand());
     }
 
     private Command getAirplanceCommand() {
@@ -52,7 +77,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -65,7 +91,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -78,7 +105,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -91,7 +119,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
         return command;
     }
 
@@ -104,7 +133,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
         return command;
     }
 
@@ -117,7 +147,22 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
+        return command;
+    }
+
+    private Command getGooglePlayLaunchCommand() {
+        Command command = new Command();
+
+        CommandInfo commandInfo = new CommandInfo();
+        commandInfo.setName("Google Play");
+        commandInfo.setCommand(CommandsEnum.GOOGLE_PLAY);
+        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
+
+        command.setCommandInfo(commandInfo);
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
         return command;
     }
 
@@ -130,7 +175,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -143,7 +189,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -156,7 +203,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
         return command;
     }
 
@@ -169,7 +217,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
         return command;
     }
 
@@ -182,7 +231,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.ACTION);
         return command;
     }
 
@@ -195,7 +245,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -208,7 +259,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -221,7 +273,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 
@@ -234,7 +287,8 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
 
         command.setCommandInfo(commandInfo);
-        command.setAllSubCommands(new ArrayList<SubCommand>());
+        command.setSubCommands(new ArrayList<SubCommand>());
+        command.setType(CommandTypeEnum.TASK);
         return command;
     }
 

@@ -52,7 +52,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.MyViewHo
         Tag tagItem = itemList.get(position);
         holder.title.setText(tagItem.getName());
         holder.description.setText(tagItem.getDescription());
-        holder.commandCount.setText("Total commands: " + tagItem.getConfigs().size());
+        holder.commandCount.setText("Total commands: " + tagItem.getCommands().size());
         holder.icon.setBackgroundResource(getImage(tagItem.getName()));
     }
 

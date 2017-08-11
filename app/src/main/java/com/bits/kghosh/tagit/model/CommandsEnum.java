@@ -12,6 +12,7 @@ public enum CommandsEnum {
     BUSINESS_CARD,
     EMAIL,
     GEOLOCATION,
+    GOOGLE_PLAY,
     LAUNCH_APPLICATION,
     LAUNCH_MUSIC_PLAYER,
     LINK,

@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_config_tag_add"
+        android:id="@+id/navigation_config_tag_add_task"
         android:checkable="false"
-        android:icon="@mipmap/nav_add"
-        android:title="@string/title_nav_add" />
+        android:icon="@mipmap/nav_task"
+        android:title="@string/title_nav_add_task" />
 
     <item
-        android:id="@+id/navigation_config_tag_save"
+        android:id="@+id/navigation_config_tag_add_action"
         android:checkable="false"
-        android:icon="@mipmap/nav_save"
-        android:title="@string/title_nav_save" />
+        android:icon="@mipmap/nav_action"
+        android:title="@string/title_nav_add_action" />
 
     <item
         android:id="@+id/navigation_config_tag_write"

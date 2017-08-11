@@ -75,6 +75,8 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
                 return R.mipmap.email;
             case GEOLOCATION:
                 return R.mipmap.location;
+            case GOOGLE_PLAY:
+                return R.mipmap.google_play;
             case LAUNCH_APPLICATION:
                 return R.mipmap.application;
             case LAUNCH_MUSIC_PLAYER:
