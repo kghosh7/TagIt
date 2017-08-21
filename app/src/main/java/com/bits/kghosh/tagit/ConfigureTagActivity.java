@@ -1,5 +1,6 @@
 package com.bits.kghosh.tagit;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.bits.kghosh.tagit.model.CommandTypeEnum;
 import com.bits.kghosh.tagit.model.CommandsEnum;
 import com.bits.kghosh.tagit.model.Tag;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
+import com.bits.kghosh.tagit.services.dto.CommandDTO;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
 
 import java.util.ArrayList;
@@ -112,12 +114,17 @@ public class ConfigureTagActivity extends AppCompatActivity {
     }
 
     private void initializeList() {
-        mAdapter = new TagCommandListAdapter(ConfigureTagActivity.this, getData());
+        //this.tag.setCommands(getData());
+        mAdapter = new TagCommandListAdapter(ConfigureTagActivity.this, this.tag.getCommands());
         recyclerView = (RecyclerView) findViewById(R.id.taskListView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void updateList() {
         mAdapter.notifyDataSetChanged();
     }
 
@@ -132,12 +139,14 @@ public class ConfigureTagActivity extends AppCompatActivity {
                             case R.id.navigation_config_tag_add_task:
                                 Intent taskListIntent = new Intent(ConfigureTagActivity.this, CommandListActivity.class);
                                 taskListIntent.putExtra("TYPE", CommandTypeEnum.TASK.name());
-                                startActivity(taskListIntent);
+                                taskListIntent.putExtra("EXCLUSIONS", getTagCommandCodes());
+                                startActivityForResult(taskListIntent, ActivityHelper.ActivityResultCodes.ConfigureTagActivity);
                                 break;
                             case R.id.navigation_config_tag_add_action:
                                 Intent actionListIntent = new Intent(ConfigureTagActivity.this, CommandListActivity.class);
                                 actionListIntent.putExtra("TYPE", CommandTypeEnum.ACTION.name());
-                                startActivity(actionListIntent);
+                                actionListIntent.putExtra("EXCLUSIONS", getTagCommandCodes());
+                                startActivityForResult(actionListIntent, ActivityHelper.ActivityResultCodes.ConfigureTagActivity);
                                 break;
                             case R.id.navigation_config_tag_write:
                                 InAppNotifications.showErrorMiddle(ConfigureTagActivity.this, masterView, "No NFC tag found to write to");
@@ -148,9 +157,33 @@ public class ConfigureTagActivity extends AppCompatActivity {
                 });
     }
 
+    private String[] getTagCommandCodes() {
+        List<String> tagCommandCodes = new ArrayList<>();
+
+        List<Command> tagCommands = this.tag.getCommands();
+        for (int i = 0; i < tagCommands.size(); i++) {
+            tagCommandCodes.add(tagCommands.get(i).getCommandInfo().getCommand().name());
+        }
+        return (String[]) tagCommandCodes.toArray(new String[0]);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_configure_tag, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ActivityHelper.ActivityResultCodes.ConfigureTagActivity) {
+            if (resultCode == Activity.RESULT_OK) {
+                CommandDTO commandDTO = CommandDTO.getInstance();
+                final Command commandTransfered = commandDTO.getCommandTransfered();
+
+                this.tag.addCommand(commandTransfered);
+                updateList();
+            }
+        }
     }
 }

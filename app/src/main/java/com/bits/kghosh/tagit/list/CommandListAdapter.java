@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bits.kghosh.tagit.R;
+import com.bits.kghosh.tagit.command.SystemCommandHelper;
 import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.CommandsEnum;
 
@@ -59,42 +60,11 @@ public class CommandListAdapter extends RecyclerView.Adapter<CommandListAdapter.
         return itemList.size();
     }
 
+    public Command getItem(int position) {
+        return itemList.get(position);
+    }
+
     private int getImage(CommandsEnum commandType) {
-        switch (commandType) {
-            case AIRPLANE_MODE:
-                return R.mipmap.airplane;
-            case BATTERY_SAVER:
-                return R.mipmap.battery;
-            case BLUETOOTH:
-                return R.mipmap.bluetooth;
-            case BRIGHTNESS:
-                return R.mipmap.brightness;
-            case BUSINESS_CARD:
-                return R.mipmap.business_card;
-            case EMAIL:
-                return R.mipmap.email;
-            case GEOLOCATION:
-                return R.mipmap.location;
-            case GOOGLE_PLAY:
-                return R.mipmap.google_play;
-            case LAUNCH_APPLICATION:
-                return R.mipmap.application;
-            case LAUNCH_MUSIC_PLAYER:
-                return R.mipmap.music_player;
-            case LINK:
-                return R.mipmap.link;
-            case MOBILE_DATA:
-                return R.mipmap.data;
-            case PLAIN_TEXT:
-                return R.mipmap.plain_text;
-            case SMS:
-                return R.mipmap.sms;
-            case SYSTEM_VOLUME:
-                return R.mipmap.system_volume;
-            case WIFI:
-                return R.mipmap.wifi;
-            default:
-                return R.mipmap.application;
-        }
+        return SystemCommandHelper.getCommandImage(commandType);
     }
 }

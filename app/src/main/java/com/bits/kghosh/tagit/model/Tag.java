@@ -1,5 +1,6 @@
 package com.bits.kghosh.tagit.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,13 +15,43 @@ public class Tag {
     private long createdAt;
     private long updatedAt;
 
+    private boolean hasTasks = false;
+    private boolean hasAction = false;
+
     public Tag() {
         this.id = System.currentTimeMillis();
+        this.commands = new ArrayList<>();
     }
 
     public Tag(String name) {
         this.id = System.currentTimeMillis();
         this.name = name;
+        this.commands = new ArrayList<>();
+    }
+
+    private void checkForTaskAndActionExistence() {
+        for (int i = 0; i < this.commands.size(); i++) {
+            if (this.commands.get(i).getType() == CommandTypeEnum.TASK) {
+                this.hasTasks = true;
+                break;
+            }
+        }
+        for (int i = 0; i < this.commands.size(); i++) {
+            if (this.commands.get(i).getType() == CommandTypeEnum.ACTION) {
+                this.hasAction = true;
+                break;
+            }
+        }
+    }
+
+    public void addCommand(Command command) {
+        commands.add(command);
+        if (command.getType() == CommandTypeEnum.TASK) {
+            this.hasTasks = true;
+        }
+        if (command.getType() == CommandTypeEnum.ACTION) {
+            this.hasAction = true;
+        }
     }
 
     public String getName() {
@@ -45,6 +76,7 @@ public class Tag {
 
     public void setCommands(List<Command> commands) {
         this.commands = commands;
+        this.checkForTaskAndActionExistence();
     }
 
     public long getCreatedAt() {
@@ -61,5 +93,13 @@ public class Tag {
 
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isHasTasks() {
+        return hasTasks;
+    }
+
+    public boolean isHasAction() {
+        return hasAction;
     }
 }

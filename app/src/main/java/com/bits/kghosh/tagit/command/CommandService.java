@@ -1,5 +1,6 @@
 package com.bits.kghosh.tagit.command;
 
+import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.SubCommand;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 
 public interface CommandService {
-    public SubCommand getConfigItem();
+    public List<SubCommand> getSubCommands();
 
     public boolean execute(SubCommand command);
 

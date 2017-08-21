@@ -15,7 +15,6 @@ import android.view.View;
 
 import com.bits.kghosh.tagit.list.TagListAdapter;
 import com.bits.kghosh.tagit.list.listeners.RecyclerItemClickListener;
-import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.Tag;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
@@ -29,6 +28,8 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TagListAdapter mAdapter;
 
+    private NfcAdapter nfcAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +38,15 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         View masterView = findViewById(R.id.homepage);
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {
             InAppNotifications.showInfo(this, masterView, "NFC available");
         } else {
             InAppNotifications.showError(this, masterView, "NFC not available");
+        }
+        if (!nfcAdapter.isEnabled()) {
+            InAppNotifications.showError(this, masterView, "NFC not enabled");
         }
 
         initializeList();
@@ -90,13 +95,6 @@ public class HomeActivity extends AppCompatActivity {
         tag1.setDescription("Maximizes volume, enables vibration, starts Google Maps and navigates to office, starts Music player and plays my favorite playlist");
         tag1.setCreatedAt(new Date().getTime());
         tag1.setUpdatedAt(new Date().getTime());
-        List<Command> tasks = new ArrayList<>();
-        Command config1 = new Command();
-        tasks.add(config1);
-        tasks.add(config1);
-        tasks.add(config1);
-        tasks.add(config1);
-        tag1.setCommands(tasks);
         tags.add(tag1);
 
         Tag tag2 = new Tag();
@@ -104,12 +102,6 @@ public class HomeActivity extends AppCompatActivity {
         tag2.setDescription("Puts phone on silent, maximizes alarm volume, turns off data, something else, something else and so on");
         tag2.setCreatedAt(new Date().getTime());
         tag2.setUpdatedAt(new Date().getTime());
-        List<Command> taskConfigs2 = new ArrayList<>();
-        Command config2 = new Command();
-        taskConfigs2.add(config2);
-        taskConfigs2.add(config2);
-        taskConfigs2.add(config2);
-        tag2.setCommands(taskConfigs2);
         tags.add(tag2);
 
         Tag tag3 = new Tag();
@@ -117,14 +109,6 @@ public class HomeActivity extends AppCompatActivity {
         tag3.setDescription("All volumes maximum, turns Wifi on, turns Data on");
         tag3.setCreatedAt(new Date().getTime());
         tag3.setUpdatedAt(new Date().getTime());
-        List<Command> taskConfigs3 = new ArrayList<>();
-        Command config3 = new Command();
-        taskConfigs3.add(config3);
-        taskConfigs3.add(config3);
-        taskConfigs3.add(config3);
-        taskConfigs3.add(config3);
-        taskConfigs3.add(config3);
-        tag3.setCommands(taskConfigs3);
         tags.add(tag3);
 
         Tag tag4 = new Tag();
@@ -132,14 +116,6 @@ public class HomeActivity extends AppCompatActivity {
         tag4.setDescription("All volumes maximum, turns Wifi on, turns Data off, some other task, another task, yet another task");
         tag4.setCreatedAt(new Date().getTime());
         tag4.setUpdatedAt(new Date().getTime());
-        List<Command> taskConfigs4 = new ArrayList<>();
-        Command config4 = new Command();
-        taskConfigs4.add(config4);
-        taskConfigs4.add(config4);
-        taskConfigs4.add(config4);
-        taskConfigs4.add(config4);
-        taskConfigs4.add(config4);
-        tag4.setCommands(taskConfigs4);
         tags.add(tag4);
 
         return tags;
