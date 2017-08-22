@@ -6,7 +6,7 @@ package com.bits.kghosh.tagit.model;
 
 public class SubCommand {
     private String key;
-    private String value;
+    private Object value;
     private String description;
 
     public String getKey() {
@@ -17,11 +17,11 @@ public class SubCommand {
         this.key = key;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 

@@ -1,7 +1,12 @@
 package com.bits.kghosh.tagit;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.FormatException;
+import android.nfc.NfcAdapter;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,6 +21,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bits.kghosh.tagit.command.SystemCommandHelper;
+import com.bits.kghosh.tagit.exceptions.InvalidTagDataException;
 import com.bits.kghosh.tagit.list.TagCommandListAdapter;
 import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.CommandTypeEnum;
@@ -24,7 +30,9 @@ import com.bits.kghosh.tagit.model.Tag;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
 import com.bits.kghosh.tagit.services.dto.CommandDTO;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
+import com.bits.kghosh.tagit.services.tag.TagWriter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +43,8 @@ public class ConfigureTagActivity extends AppCompatActivity {
     private TagCommandListAdapter mAdapter;
     private Tag tag;
     View masterView;
+
+    private NfcAdapter nfcAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,7 @@ public class ConfigureTagActivity extends AppCompatActivity {
 
         masterView = findViewById(R.id.configure_tag_main_view);
 
+        initializeNFC();
         initData();
         initializeList();
         initClickHandlers();
@@ -73,6 +84,18 @@ public class ConfigureTagActivity extends AppCompatActivity {
             tagDesc.setText("");
             tagCreatedAt.setText(Long.toString(System.currentTimeMillis()));
             tagUpdatedAt.setText(Long.toString(System.currentTimeMillis()));
+        }
+    }
+
+    private void initializeNFC() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter != null) {
+            InAppNotifications.showInfo(this, masterView, "NFC available");
+        } else {
+            InAppNotifications.showError(this, masterView, "NFC not available");
+        }
+        if (!nfcAdapter.isEnabled()) {
+            InAppNotifications.showError(this, masterView, "NFC not enabled");
         }
     }
 
@@ -183,6 +206,41 @@ public class ConfigureTagActivity extends AppCompatActivity {
 
                 this.tag.addCommand(commandTransfered);
                 updateList();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (nfcAdapter != null) {
+            IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+            IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            IntentFilter techDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+            IntentFilter[] nfcIntentFilters = new IntentFilter[]{tagDetected, ndefDetected, techDetected};
+
+            PendingIntent pendingIntent =
+                    PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, nfcIntentFilters, null);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        android.nfc.Tag nfcTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        if (nfcTag != null) {
+            Ndef ndef = Ndef.get(nfcTag);
+            TagWriter writer = new TagWriter();
+            try {
+                writer.write(ndef, tag);
+            } catch (InvalidTagDataException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (FormatException e) {
+                e.printStackTrace();
             }
         }
     }

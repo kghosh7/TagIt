@@ -1,6 +1,7 @@
 package com.bits.kghosh.tagit.command;
 
 import com.bits.kghosh.tagit.command.impl.ContactCommandService;
+import com.bits.kghosh.tagit.command.impl.URLCommandService;
 import com.bits.kghosh.tagit.model.CommandsEnum;
 
 /**
@@ -23,6 +24,7 @@ public class CommandServiceFactory {
             case LAUNCH_APPLICATION:
             case LAUNCH_MUSIC_PLAYER:
             case LINK:
+                return new URLCommandService();
             case MOBILE_DATA:
             case PLAIN_TEXT:
             case SMS:

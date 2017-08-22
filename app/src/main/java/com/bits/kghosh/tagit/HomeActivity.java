@@ -1,7 +1,11 @@
 package com.bits.kghosh.tagit;
 
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +22,8 @@ import com.bits.kghosh.tagit.list.listeners.RecyclerItemClickListener;
 import com.bits.kghosh.tagit.model.Tag;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
+import com.bits.kghosh.tagit.services.tag.TagReader;
+import com.bits.kghosh.tagit.services.tag.TagWriter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,9 +43,14 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        View masterView = findViewById(R.id.homepage);
+        initializeNFC();
+        initializeList();
+        initializeClickHandlers();
+    }
 
+    private void initializeNFC() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        View masterView = findViewById(R.id.homepage);
         if (nfcAdapter != null) {
             InAppNotifications.showInfo(this, masterView, "NFC available");
         } else {
@@ -48,9 +59,6 @@ public class HomeActivity extends AppCompatActivity {
         if (!nfcAdapter.isEnabled()) {
             InAppNotifications.showError(this, masterView, "NFC not enabled");
         }
-
-        initializeList();
-        initializeClickHandlers();
     }
 
     private void initializeClickHandlers() {
@@ -135,5 +143,41 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (nfcAdapter != null) {
+            IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+            IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            IntentFilter techDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+            IntentFilter[] nfcIntentFilters = new IntentFilter[]{tagDetected, ndefDetected, techDetected};
+
+            PendingIntent pendingIntent =
+                    PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, nfcIntentFilters, null);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        android.nfc.Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        if (tag != null) {
+            Ndef ndef = Ndef.get(tag);
+            TagReader.readFromNFC(ndef);
+            //TagWriter writer = new TagWriter();
+            //writer.writeToNfc(ndef, "hey krish");
+        }
     }
 }

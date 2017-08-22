@@ -1,13 +1,11 @@
 package com.bits.kghosh.tagit.command.impl;
 
-import android.text.TextUtils;
-
 import com.bits.kghosh.tagit.command.CommandService;
 import com.bits.kghosh.tagit.model.Command;
+import com.bits.kghosh.tagit.model.NdefRecordTypeEnum;
 import com.bits.kghosh.tagit.model.SubCommand;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,13 +15,13 @@ import java.util.List;
 public class ContactCommandService implements CommandService {
 
     @Override
-    public boolean execute(SubCommand command) {
+    public boolean execute(Command command) {
         boolean success = false;
         return success;
     }
 
     @Override
-    public boolean execute(List<SubCommand> commands) {
+    public boolean execute(List<Command> commands) {
         boolean success = false;
         if (commands != null) {
             for (int i = 0; i < commands.size(); i++) {
@@ -33,26 +31,10 @@ public class ContactCommandService implements CommandService {
         return success;
     }
 
-//    @Override
-//    public String getTagWritableCommandObject(Command command) {
-//        String contentString = null;
-//        Collection<String> contents = new ArrayList<>();
-//        if (command != null) {
-//            final List<SubCommand> subCommands = command.getSubCommands();
-//            if (subCommands == null || subCommands.size() < 1) {
-//                return null;
-//            } else {
-//                for (int i = 0; i < subCommands.size(); i++) {
-//                    final String subCommandString = getTagWritableSubcommandString(subCommands.get(i));
-//                    if (subCommandString != null) {
-//                        contents.add(subCommandString);
-//                    }
-//                }
-//                contentString = TextUtils.join(";", contents);
-//            }
-//        }
-//        return contentString;
-//    }
+    @Override
+    public Object getDataToWrite(Command command) {
+        return null;
+    }
 
     @Override
     public List<SubCommand> getSubCommands() {
@@ -61,8 +43,8 @@ public class ContactCommandService implements CommandService {
         return null;
     }
 
-
-//    private String getTagWritableSubcommandString(SubCommand subCommand) {
-//        return null;
-//    }
+    @Override
+    public NdefRecordTypeEnum getRecordType() {
+        return NdefRecordTypeEnum.TEXT;
+    }
 }
