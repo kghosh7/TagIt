@@ -63,7 +63,8 @@ public class TagWriter {
     private void write(Ndef ndef, NdefRecordTypeEnum type, Object data) throws IOException, FormatException {
         NdefRecord record = null;
         switch (type) {
-            case APPLICATION:
+            case TELEPHONE:
+                record = createTelephoneNdefRecord(data);
                 break;
             case URI:
                 record = createURINdefRecord(data);
@@ -80,7 +81,7 @@ public class TagWriter {
     }
 
     private NdefRecord createURINdefRecord(Object data) {
-        if (data instanceof String) {
+        if (data != null && data instanceof String) {
             return NdefRecord.createUri(data.toString());
         } else {
             return null;
@@ -88,8 +89,16 @@ public class TagWriter {
     }
 
     private NdefRecord createTextNdefRecord(Object data) {
-        if (data instanceof String) {
+        if (data != null && data instanceof String) {
             return NdefRecord.createMime("text/plain", data.toString().getBytes(Charset.forName("US-ASCII")));
+        } else {
+            return null;
+        }
+    }
+
+    private NdefRecord createTelephoneNdefRecord(Object data) {
+        if (data != null && data instanceof String) {
+            return NdefRecord.createUri("tel:" + data.toString());
         } else {
             return null;
         }

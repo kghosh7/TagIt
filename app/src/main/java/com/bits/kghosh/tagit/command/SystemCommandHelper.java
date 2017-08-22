@@ -157,10 +157,13 @@ public class SystemCommandHelper {
         commandInfo.setName("Contact");
         commandInfo.setCommand(CommandsEnum.BUSINESS_CARD);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        CommandServiceFactory factory = new CommandServiceFactory();
+        final CommandService commandService = factory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
+
         return command;
     }
 
@@ -241,10 +244,13 @@ public class SystemCommandHelper {
         commandInfo.setName("Website URL");
         commandInfo.setCommand(CommandsEnum.LINK);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        CommandServiceFactory factory = new CommandServiceFactory();
+        final CommandService commandService = factory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
+
         return command;
     }
 

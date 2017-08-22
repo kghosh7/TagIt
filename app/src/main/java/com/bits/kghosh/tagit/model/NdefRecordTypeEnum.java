@@ -7,5 +7,5 @@ package com.bits.kghosh.tagit.model;
 public enum NdefRecordTypeEnum {
     TEXT,
     URI,
-    APPLICATION
+    TELEPHONE
 }
