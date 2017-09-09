@@ -16,8 +16,4 @@ public interface CommandService {
     public boolean execute(Command command);
 
     public boolean execute(List<Command> commands);
-
-    public Object getDataToWrite(Command command);
-
-    public NdefRecordTypeEnum getRecordType();
 }

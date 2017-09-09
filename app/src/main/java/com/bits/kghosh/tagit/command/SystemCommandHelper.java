@@ -21,7 +21,10 @@ public class SystemCommandHelper {
     private Map<CommandsEnum, Command> tasksMap = new LinkedHashMap<>();
     private Map<CommandsEnum, Command> actionsMap = new LinkedHashMap<>();
 
+    private CommandServiceFactory serviceFactory;
+
     public SystemCommandHelper() {
+        serviceFactory = new CommandServiceFactory();
         initialize();
     }
 
@@ -115,9 +118,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Airplane Mode");
         commandInfo.setCommand(CommandsEnum.AIRPLANE_MODE);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -129,9 +133,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Bluetooth");
         commandInfo.setCommand(CommandsEnum.BLUETOOTH);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -143,9 +148,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Brightness");
         commandInfo.setCommand(CommandsEnum.BRIGHTNESS);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -159,8 +165,7 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
         command.setCommandInfo(commandInfo);
 
-        CommandServiceFactory factory = new CommandServiceFactory();
-        final CommandService commandService = factory.getCommandService(commandInfo.getCommand());
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
         command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
 
@@ -174,9 +179,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Email");
         commandInfo.setCommand(CommandsEnum.EMAIL);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
         return command;
     }
@@ -188,9 +194,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Location");
         commandInfo.setCommand(CommandsEnum.GEOLOCATION);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
         return command;
     }
@@ -202,9 +209,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Google Play");
         commandInfo.setCommand(CommandsEnum.GOOGLE_PLAY);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
         return command;
     }
@@ -216,9 +224,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Launch Application");
         commandInfo.setCommand(CommandsEnum.LAUNCH_APPLICATION);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -230,9 +239,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Launch Music Player");
         commandInfo.setCommand(CommandsEnum.LAUNCH_MUSIC_PLAYER);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -246,8 +256,7 @@ public class SystemCommandHelper {
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
         command.setCommandInfo(commandInfo);
 
-        CommandServiceFactory factory = new CommandServiceFactory();
-        final CommandService commandService = factory.getCommandService(commandInfo.getCommand());
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
         command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
 
@@ -261,9 +270,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Text");
         commandInfo.setCommand(CommandsEnum.PLAIN_TEXT);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
         return command;
     }
@@ -275,9 +285,10 @@ public class SystemCommandHelper {
         commandInfo.setName("SMS");
         commandInfo.setCommand(CommandsEnum.SMS);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.ACTION);
         return command;
     }
@@ -289,9 +300,10 @@ public class SystemCommandHelper {
         commandInfo.setName("System Volume");
         commandInfo.setCommand(CommandsEnum.SYSTEM_VOLUME);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -303,9 +315,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Wifi");
         commandInfo.setCommand(CommandsEnum.WIFI);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -317,9 +330,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Mobile Data");
         commandInfo.setCommand(CommandsEnum.MOBILE_DATA);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }
@@ -331,9 +345,10 @@ public class SystemCommandHelper {
         commandInfo.setName("Battery Saver");
         commandInfo.setCommand(CommandsEnum.BATTERY_SAVER);
         commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-
         command.setCommandInfo(commandInfo);
-        command.setSubCommands(new ArrayList<SubCommand>());
+
+        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
+        command.setSubCommands(commandService.getSubCommands());
         command.setType(CommandTypeEnum.TASK);
         return command;
     }

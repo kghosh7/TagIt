@@ -1,8 +1,9 @@
-package com.bits.kghosh.tagit.command.impl;
+package com.bits.kghosh.tagit.command.impl.action;
+
+import android.content.Context;
 
 import com.bits.kghosh.tagit.command.CommandService;
 import com.bits.kghosh.tagit.model.Command;
-import com.bits.kghosh.tagit.model.NdefRecordTypeEnum;
 import com.bits.kghosh.tagit.model.SubCommand;
 
 import java.util.ArrayList;
@@ -16,10 +17,14 @@ import java.util.Map;
 
 public class URLCommandService implements CommandService {
 
-    private Map<String, SubCommand> subCommandMap;
-    List<SubCommand> subCommands;
+    private static String URL = "URUR";
 
-    public URLCommandService() {
+    private Context context;
+    private Map<String, SubCommand> subCommandMap;
+    private List<SubCommand> subCommands;
+
+    public URLCommandService(Context context) {
+        this.context = context;
         subCommandMap = new LinkedHashMap<>();
         subCommands = new ArrayList<>();
 
@@ -27,13 +32,14 @@ public class URLCommandService implements CommandService {
     }
 
     private void initializeSubCommands() {
+        // Subcommand to launch URI
         SubCommand subCommand = new SubCommand();
-        subCommand.setKey("URUR");
+        subCommand.setKey(URL);
         subCommand.setValue("http://www.facebook.com");
         subCommand.setDescription("Write URL to your tag");
 
         subCommands.add(subCommand);
-        subCommandMap.put("URUR", subCommand);
+        subCommandMap.put(subCommand.getKey(), subCommand);
     }
 
     @Override
@@ -56,22 +62,5 @@ public class URLCommandService implements CommandService {
     @Override
     public List<SubCommand> getSubCommands() {
         return subCommands;
-    }
-
-    @Override
-    public Object getDataToWrite(Command command) {
-        if (command != null) {
-            List<SubCommand> subCommands = command.getSubCommands();
-            if (subCommands != null && subCommands.size() > 0) {
-                SubCommand comm = subCommands.get(0);
-                return comm.getValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public NdefRecordTypeEnum getRecordType() {
-        return NdefRecordTypeEnum.URI;
     }
 }

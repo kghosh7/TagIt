@@ -1,7 +1,11 @@
 package com.bits.kghosh.tagit.command;
 
-import com.bits.kghosh.tagit.command.impl.ContactCommandService;
-import com.bits.kghosh.tagit.command.impl.URLCommandService;
+import android.content.Context;
+
+import com.bits.kghosh.tagit.command.impl.action.ContactCommandService;
+import com.bits.kghosh.tagit.command.impl.action.URLCommandService;
+import com.bits.kghosh.tagit.command.impl.task.BluetothModeCommandService;
+import com.bits.kghosh.tagit.command.impl.task.BrightnessModeCommandService;
 import com.bits.kghosh.tagit.model.CommandsEnum;
 
 /**
@@ -9,22 +13,30 @@ import com.bits.kghosh.tagit.model.CommandsEnum;
  */
 
 public class CommandServiceFactory {
-    public CommandService getCommandService(CommandsEnum commandType) {
 
+    private Context context;
+
+    public CommandServiceFactory(Context context) {
+        this.context = context;
+    }
+
+    public CommandService getCommandService(CommandsEnum commandType) {
         switch (commandType) {
             case AIRPLANE_MODE:
             case BATTERY_SAVER:
             case BLUETOOTH:
+                return new BluetothModeCommandService(context);
             case BRIGHTNESS:
+                return new BrightnessModeCommandService(context);
             case BUSINESS_CARD:
-                return new ContactCommandService();
+                return new ContactCommandService(context);
             case EMAIL:
             case GEOLOCATION:
             case GOOGLE_PLAY:
             case LAUNCH_APPLICATION:
             case LAUNCH_MUSIC_PLAYER:
             case LINK:
-                return new URLCommandService();
+                return new URLCommandService(context);
             case MOBILE_DATA:
             case PLAIN_TEXT:
             case SMS:

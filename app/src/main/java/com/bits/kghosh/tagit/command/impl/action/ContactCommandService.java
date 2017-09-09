@@ -1,8 +1,9 @@
-package com.bits.kghosh.tagit.command.impl;
+package com.bits.kghosh.tagit.command.impl.action;
+
+import android.content.Context;
 
 import com.bits.kghosh.tagit.command.CommandService;
 import com.bits.kghosh.tagit.model.Command;
-import com.bits.kghosh.tagit.model.NdefRecordTypeEnum;
 import com.bits.kghosh.tagit.model.SubCommand;
 
 import java.util.ArrayList;
@@ -16,10 +17,14 @@ import java.util.Map;
 
 public class ContactCommandService implements CommandService {
 
-    private Map<String, SubCommand> subCommandMap;
-    List<SubCommand> subCommands;
+    private static String TELEPHONE = "TLTL";
 
-    public ContactCommandService() {
+    private Context context;
+    private Map<String, SubCommand> subCommandMap;
+    private List<SubCommand> subCommands;
+
+    public ContactCommandService(Context context) {
+        this.context = context;
         subCommandMap = new LinkedHashMap<>();
         subCommands = new ArrayList<>();
 
@@ -27,13 +32,14 @@ public class ContactCommandService implements CommandService {
     }
 
     private void initializeSubCommands() {
+        // Sub command to write telephone number
         SubCommand subCommand = new SubCommand();
-        subCommand.setKey("TLTL");
+        subCommand.setKey(TELEPHONE);
         subCommand.setValue("9850297030");
         subCommand.setDescription("Write telephone number to your tag");
 
         subCommands.add(subCommand);
-        subCommandMap.put("TLTL", subCommand);
+        subCommandMap.put(subCommand.getKey(), subCommand);
     }
 
     @Override
@@ -54,24 +60,7 @@ public class ContactCommandService implements CommandService {
     }
 
     @Override
-    public Object getDataToWrite(Command command) {
-        if (command != null) {
-            List<SubCommand> subCommands = command.getSubCommands();
-            if (subCommands != null && subCommands.size() > 0) {
-                SubCommand comm = subCommands.get(0);
-                return comm.getValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
     public List<SubCommand> getSubCommands() {
         return subCommands;
-    }
-
-    @Override
-    public NdefRecordTypeEnum getRecordType() {
-        return NdefRecordTypeEnum.TELEPHONE;
     }
 }

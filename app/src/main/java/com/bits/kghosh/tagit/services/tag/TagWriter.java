@@ -5,16 +5,17 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.tech.Ndef;
 
-import com.bits.kghosh.tagit.command.CommandService;
 import com.bits.kghosh.tagit.command.CommandServiceFactory;
 import com.bits.kghosh.tagit.exceptions.InvalidTagDataException;
 import com.bits.kghosh.tagit.model.Command;
 import com.bits.kghosh.tagit.model.CommandsEnum;
 import com.bits.kghosh.tagit.model.NdefRecordTypeEnum;
+import com.bits.kghosh.tagit.model.SubCommand;
 import com.bits.kghosh.tagit.model.Tag;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,60 +24,113 @@ import java.util.List;
 
 public class TagWriter {
 
-    CommandServiceFactory factory;
+    private CommandServiceFactory factory;
 
     public TagWriter() {
         this.factory = new CommandServiceFactory();
     }
 
-    public void write(Ndef ndef, Tag tag) throws InvalidTagDataException, IOException, FormatException {
+    public boolean write(Ndef ndef, Tag tag) throws InvalidTagDataException {
         if (tag == null || tag.getCommands() == null || tag.getCommands().size() < 1) {
             throw new InvalidTagDataException("No data to write");
         }
 
-        if (tag.isHasTasks()) {
-            writeTasks(tag.getCommands());
-        } else if (tag.isHasAction()) {
-            writeAction(ndef, tag.getCommands());
+        try {
+            if (tag.isHasTasks()) {
+                return writeTasks(ndef, tag.getCommands());
+            } else if (tag.isHasAction()) {
+                return writeAction(ndef, tag.getCommands());
+            } else {
+                throw new InvalidTagDataException("No data to write");
+            }
+        } catch (Exception ex) {
+            return false;
         }
     }
 
-    private void writeTasks(List<Command> commands) throws IOException, FormatException {
+    private boolean writeTasks(Ndef ndef, List<Command> commands) throws IOException, FormatException {
+        boolean success = false;
+        if (commands != null && commands.size() > 0) {
+            List<String> dataToWrite = new ArrayList<>();
+            String subCommandData = "";
+            Command command;
+            List<SubCommand> subCommands;
+            SubCommand subCommand;
 
-    }
-
-    private void writeAction(Ndef ndef, List<Command> commands) throws IOException, FormatException {
-        Command command = commands.get(0);
-        if (command != null) {
-            final CommandsEnum commandType = command.getCommandInfo().getCommand();
-
-            final CommandService commandService = factory.getCommandService(command.getCommandInfo().getCommand());
-            if (commandService != null) {
-                final Object content = commandService.getDataToWrite(command);
-                final NdefRecordTypeEnum recordType = commandService.getRecordType();
-                //logic to write
-                write(ndef, recordType, content);
+            for (int i = 0; i < commands.size(); i++) {
+                command = commands.get(i);
+                if (command != null) {
+                    subCommands = command.getSubCommands();
+                    if (subCommands != null && subCommands.size() > 0) {
+                        subCommand = subCommands.get(i);
+                        if (subCommand != null) {
+                            subCommandData = subCommand.getKey() != null && subCommand.getValue() != null ?
+                                    subCommand.getKey() + ":" + subCommand.getValue().toString() : "";
+                            if (subCommandData != null && subCommandData != "") {
+                                dataToWrite.add(subCommandData);
+                            }
+                            // e.g. ULUL:abc.com;TLTL:9203847564
+                        }
+                    }
+                }
+            }
+            if (dataToWrite.size() > 0) {
+                success = write(ndef, NdefRecordTypeEnum.TAGIT, dataToWrite);
             }
         }
+        return success;
     }
 
-    private void write(Ndef ndef, NdefRecordTypeEnum type, Object data) throws IOException, FormatException {
-        NdefRecord record = null;
+    private boolean writeAction(Ndef ndef, List<Command> commands) throws IOException, FormatException {
+        boolean success = false;
+        Command command = commands.get(0);
+        if (command != null) {
+            final Object content = this.getActionDataToWrite(command);
+            final CommandsEnum commandType = command.getCommandInfo().getCommand();
+            final NdefRecordTypeEnum recordType = this.getNdefRecordType(commandType);
+
+            success = write(ndef, recordType, content);
+        }
+        return success;
+    }
+
+    private boolean write(Ndef ndef, NdefRecordTypeEnum type, Object data) throws IOException, FormatException {
         switch (type) {
             case TELEPHONE:
-                record = createTelephoneNdefRecord(data);
-                break;
+                NdefRecord telephoneRecord = createTelephoneNdefRecord(data);
+                return writeToNfc(ndef, telephoneRecord);
             case URI:
-                record = createURINdefRecord(data);
-                break;
+                NdefRecord uriRecord = createURINdefRecord(data);
+                return writeToNfc(ndef, uriRecord);
+            case TAGIT:
+                List<NdefRecord> tagItRecords = createTagItRecord(data);
+                return writeToNfc(ndef, tagItRecords);
             case TEXT:
             default:
-                record = createTextNdefRecord(data);
-                break;
+                NdefRecord textRecord = createTextNdefRecord(data);
+                return writeToNfc(ndef, textRecord);
         }
+    }
 
-        if (record != null) {
-            writeToNfc(ndef, record);
+    private boolean writeToNfc(Ndef ndef, NdefRecord record) throws IOException, FormatException {
+        if (ndef != null && record != null) {
+            ndef.connect();
+            ndef.writeNdefMessage(new NdefMessage(record));
+            ndef.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean writeToNfc(Ndef ndef, List<NdefRecord> records) throws IOException, FormatException {
+        if (ndef != null && records != null && records.size() > 0) {
+            ndef.connect();
+            ndef.writeNdefMessage(new NdefMessage(records.toArray(new NdefRecord[0])));
+            ndef.close();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -86,6 +140,23 @@ public class TagWriter {
         } else {
             return null;
         }
+    }
+
+    private List<NdefRecord> createTagItRecord(Object data) {
+        if (data != null && data instanceof List) {
+            if (((List) data).size() > 0 && ((List) data).get(0) instanceof String) {
+                List<NdefRecord> records = new ArrayList<>();
+                for (int i = 0; i < ((List) data).size(); i++) {
+                    records.add(NdefRecord.createExternal(
+                            "com.bits.kghosh.tagit",
+                            "data",
+                            ((List) data).get(i).toString().getBytes())
+                    );
+                }
+                return records;
+            }
+        }
+        return null;
     }
 
     private NdefRecord createTextNdefRecord(Object data) {
@@ -104,12 +175,39 @@ public class TagWriter {
         }
     }
 
-    private void writeToNfc(Ndef ndef, NdefRecord record) throws IOException, FormatException {
-        if (ndef != null) {
-            ndef.connect();
-            ndef.writeNdefMessage(new NdefMessage(record));
-            ndef.close();
+    private NdefRecordTypeEnum getNdefRecordType(CommandsEnum commandType) {
+        switch (commandType) {
+            case BUSINESS_CARD:
+                return NdefRecordTypeEnum.TELEPHONE;
+            case LINK:
+                return NdefRecordTypeEnum.URI;
+            case AIRPLANE_MODE:
+            case BATTERY_SAVER:
+            case BLUETOOTH:
+            case BRIGHTNESS:
+            case EMAIL:
+            case GEOLOCATION:
+            case GOOGLE_PLAY:
+            case LAUNCH_APPLICATION:
+            case LAUNCH_MUSIC_PLAYER:
+            case MOBILE_DATA:
+            case PLAIN_TEXT:
+            case SMS:
+            case SYSTEM_VOLUME:
+            case WIFI:
+            default:
+                return NdefRecordTypeEnum.TEXT;
         }
     }
 
+    private Object getActionDataToWrite(Command command) {
+        if (command != null) {
+            List<SubCommand> subCommands = command.getSubCommands();
+            if (subCommands != null && subCommands.size() > 0) {
+                SubCommand comm = subCommands.get(0);
+                return comm.getValue();
+            }
+        }
+        return null;
+    }
 }
