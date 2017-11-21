@@ -77,14 +77,14 @@ public class BluetothModeCommandService implements CommandService {
 
     private boolean executeSubCommand(SubCommand subCommand) {
         if (subCommand.getKey().equals(MODE)) {
-            return setBluetoothMode(subCommand.getValue());
+            return setBluetoothMode((Boolean) subCommand.getValue());
         } else {
             return false;
         }
     }
 
-    private boolean setBluetoothMode(Object data) {
-        boolean isActive = data instanceof Boolean && data == true ? true : false;
+    private boolean setBluetoothMode(Boolean data) {
+        boolean isActive = data == true;
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter != null) {
             if (isActive) {

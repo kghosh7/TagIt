@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.FormatException;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
@@ -20,19 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bits.kghosh.tagit.command.SystemCommandHelper;
+import com.bits.kghosh.tagit.animation.GifImageView;
 import com.bits.kghosh.tagit.exceptions.InvalidTagDataException;
 import com.bits.kghosh.tagit.list.TagCommandListAdapter;
 import com.bits.kghosh.tagit.model.Command;
-import com.bits.kghosh.tagit.model.CommandTypeEnum;
-import com.bits.kghosh.tagit.model.CommandsEnum;
+import com.bits.kghosh.tagit.model.CommandBehaviorEnum;
 import com.bits.kghosh.tagit.model.Tag;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
 import com.bits.kghosh.tagit.services.dto.CommandDTO;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
 import com.bits.kghosh.tagit.services.tag.TagWriter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +53,8 @@ public class ConfigureTagActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         masterView = findViewById(R.id.configure_tag_main_view);
+        GifImageView gifImageView = (GifImageView) findViewById(R.id.GifImageView);
+        gifImageView.setGifImageResource(R.mipmap.animation);
 
         initializeNFC();
         initData();
@@ -87,55 +86,6 @@ public class ConfigureTagActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeNFC() {
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter != null) {
-            InAppNotifications.showInfo(this, masterView, "NFC available");
-        } else {
-            InAppNotifications.showError(this, masterView, "NFC not available");
-        }
-        if (!nfcAdapter.isEnabled()) {
-            InAppNotifications.showError(this, masterView, "NFC not enabled");
-        }
-    }
-
-    private List<Command> getData() {
-        List<Command> tasks = new ArrayList<>();
-        SystemCommandHelper helper = new SystemCommandHelper();
-
-        Command airplaneCommand = helper.getSystemCommand(CommandsEnum.AIRPLANE_MODE);
-        Command airplaneConfig = new Command();
-        airplaneConfig.setCommandInfo(airplaneCommand.getCommandInfo());
-        tasks.add(airplaneConfig);
-
-        Command batteryCommand = helper.getSystemCommand(CommandsEnum.BATTERY_SAVER);
-        Command batteryConfig = new Command();
-        batteryConfig.setCommandInfo(batteryCommand.getCommandInfo());
-        tasks.add(batteryConfig);
-
-        Command bluetoothCommand = helper.getSystemCommand(CommandsEnum.BLUETOOTH);
-        Command bluetoothConfig = new Command();
-        bluetoothConfig.setCommandInfo(bluetoothCommand.getCommandInfo());
-        tasks.add(bluetoothConfig);
-
-        Command brightnessCommand = helper.getSystemCommand(CommandsEnum.BRIGHTNESS);
-        Command brightnessConfig = new Command();
-        brightnessConfig.setCommandInfo(brightnessCommand.getCommandInfo());
-        tasks.add(brightnessConfig);
-
-        Command businessCardCommand = helper.getSystemCommand(CommandsEnum.BUSINESS_CARD);
-        Command businessCardConfig = new Command();
-        businessCardConfig.setCommandInfo(businessCardCommand.getCommandInfo());
-        tasks.add(businessCardConfig);
-
-        Command launchAppCommand = helper.getSystemCommand(CommandsEnum.LAUNCH_APPLICATION);
-        Command launchAppConfig = new Command();
-        launchAppConfig.setCommandInfo(launchAppCommand.getCommandInfo());
-        tasks.add(launchAppConfig);
-
-        return tasks;
-    }
-
     private void initializeList() {
         //this.tag.setCommands(getData());
         mAdapter = new TagCommandListAdapter(ConfigureTagActivity.this, this.tag.getCommands());
@@ -145,6 +95,10 @@ public class ConfigureTagActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void initializeNFC() {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
 
     private void updateList() {
@@ -161,18 +115,22 @@ public class ConfigureTagActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.navigation_config_tag_add_task:
                                 Intent taskListIntent = new Intent(ConfigureTagActivity.this, CommandListActivity.class);
-                                taskListIntent.putExtra("TYPE", CommandTypeEnum.TASK.name());
+                                taskListIntent.putExtra("TYPE", CommandBehaviorEnum.TASK.name());
                                 taskListIntent.putExtra("EXCLUSIONS", getTagCommandCodes());
                                 startActivityForResult(taskListIntent, ActivityHelper.ActivityResultCodes.ConfigureTagActivity);
                                 break;
                             case R.id.navigation_config_tag_add_action:
                                 Intent actionListIntent = new Intent(ConfigureTagActivity.this, CommandListActivity.class);
-                                actionListIntent.putExtra("TYPE", CommandTypeEnum.ACTION.name());
+                                actionListIntent.putExtra("TYPE", CommandBehaviorEnum.ACTION.name());
                                 actionListIntent.putExtra("EXCLUSIONS", getTagCommandCodes());
                                 startActivityForResult(actionListIntent, ActivityHelper.ActivityResultCodes.ConfigureTagActivity);
                                 break;
                             case R.id.navigation_config_tag_write:
-                                InAppNotifications.showErrorMiddle(ConfigureTagActivity.this, masterView, "No NFC tag found to write to");
+                                if (tag == null || tag.getCommands().size() == 0) {
+                                    InAppNotifications.showErrorMiddle(ConfigureTagActivity.this, masterView, "No content to write");
+                                } else {
+                                    beginTagDiscovery();
+                                }
                                 break;
                         }
                         return true;
@@ -197,6 +155,16 @@ public class ConfigureTagActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (isTagDiscoveryOn()) {
+            endTagDiscovery();
+        } else {
+            super.onBackPressed();
+        }
+        endTagDiscovery();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ActivityHelper.ActivityResultCodes.ConfigureTagActivity) {
@@ -210,10 +178,9 @@ public class ConfigureTagActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+    private void beginTagDiscovery() {
+        View animationContainer = findViewById(R.id.animationContainer);
+        animationContainer.setVisibility(View.VISIBLE);
         if (nfcAdapter != null) {
             IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
             IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
@@ -227,19 +194,29 @@ public class ConfigureTagActivity extends AppCompatActivity {
         }
     }
 
+    private void endTagDiscovery() {
+        View animationContainer = findViewById(R.id.animationContainer);
+        animationContainer.setVisibility(View.GONE);
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    private boolean isTagDiscoveryOn() {
+        View animationContainer = findViewById(R.id.animationContainer);
+        return animationContainer.getVisibility() == View.VISIBLE;
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         android.nfc.Tag nfcTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (nfcTag != null) {
             Ndef ndef = Ndef.get(nfcTag);
-            TagWriter writer = new TagWriter();
+            TagWriter writer = new TagWriter(getApplicationContext());
             try {
                 writer.write(ndef, tag);
+                endTagDiscovery();
             } catch (InvalidTagDataException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (FormatException e) {
                 e.printStackTrace();
             }
         }

@@ -9,9 +9,9 @@
     tools:showIn="@layout/activity_command_list">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/commandListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/commandListView"
         android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>

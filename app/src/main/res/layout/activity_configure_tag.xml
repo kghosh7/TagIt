@@ -2,10 +2,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/configure_tag_main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:id="@+id/configure_tag_main_view"
     tools:context="com.bits.kghosh.tagit.ConfigureTagActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -26,7 +26,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/banner"/>
+                app:srcCompat="@mipmap/banner" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -40,14 +40,43 @@
 
     <include layout="@layout/content_configure_tag" />
 
+    <RelativeLayout
+        android:id="@+id/animationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.6"
+            android:background="@android:color/darker_gray"></RelativeLayout>
+
+        <com.bits.kghosh.tagit.animation.GifImageView
+            android:id="@+id/GifImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/GifImageView"
+            android:text="Waiting for tag..."
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_configure_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation_configure_tag"
         app:itemIconTint="@color/colorPrimary"
-        app:itemTextColor="@color/colorPrimary"/>
+        app:itemTextColor="@color/colorPrimary"
+        app:menu="@menu/navigation_configure_tag" />
 
 </android.support.design.widget.CoordinatorLayout>

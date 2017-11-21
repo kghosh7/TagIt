@@ -31,13 +31,13 @@ public class Tag {
 
     private void checkForTaskAndActionExistence() {
         for (int i = 0; i < this.commands.size(); i++) {
-            if (this.commands.get(i).getType() == CommandTypeEnum.TASK) {
+            if (this.commands.get(i).getBehavior() == CommandBehaviorEnum.TASK) {
                 this.hasTasks = true;
                 break;
             }
         }
         for (int i = 0; i < this.commands.size(); i++) {
-            if (this.commands.get(i).getType() == CommandTypeEnum.ACTION) {
+            if (this.commands.get(i).getBehavior() == CommandBehaviorEnum.ACTION) {
                 this.hasAction = true;
                 break;
             }
@@ -46,10 +46,10 @@ public class Tag {
 
     public void addCommand(Command command) {
         commands.add(command);
-        if (command.getType() == CommandTypeEnum.TASK) {
+        if (command.getBehavior() == CommandBehaviorEnum.TASK) {
             this.hasTasks = true;
         }
-        if (command.getType() == CommandTypeEnum.ACTION) {
+        if (command.getBehavior() == CommandBehaviorEnum.ACTION) {
             this.hasAction = true;
         }
     }

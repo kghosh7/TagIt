@@ -3,7 +3,6 @@ package com.bits.kghosh.tagit;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import com.bits.kghosh.tagit.model.Tag;
 import com.bits.kghosh.tagit.notifications.InAppNotifications;
 import com.bits.kghosh.tagit.services.dto.TagDTO;
 import com.bits.kghosh.tagit.services.tag.TagReader;
-import com.bits.kghosh.tagit.services.tag.TagWriter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,12 +50,12 @@ public class HomeActivity extends AppCompatActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         View masterView = findViewById(R.id.homepage);
         if (nfcAdapter != null) {
-            InAppNotifications.showInfo(this, masterView, "NFC available");
+            //InAppNotifications.showInfo(this, masterView, "NFC available");
+            if (!nfcAdapter.isEnabled()) {
+                InAppNotifications.showError(this, masterView, "NFC not enabled");
+            }
         } else {
             InAppNotifications.showError(this, masterView, "NFC not available");
-        }
-        if (!nfcAdapter.isEnabled()) {
-            InAppNotifications.showError(this, masterView, "NFC not enabled");
         }
     }
 
@@ -176,8 +174,6 @@ public class HomeActivity extends AppCompatActivity {
         if (tag != null) {
             Ndef ndef = Ndef.get(tag);
             TagReader.readFromNFC(ndef);
-            //TagWriter writer = new TagWriter();
-            //writer.writeToNfc(ndef, "hey krish");
         }
     }
 }

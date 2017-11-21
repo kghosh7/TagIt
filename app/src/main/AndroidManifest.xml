@@ -6,10 +6,14 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
+
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -30,6 +34,7 @@
         </activity>
         <activity
             android:name=".ConfigureTagActivity"
+            android:hardwareAccelerated="false"
             android:label="@string/title_activity_configure_tag"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">

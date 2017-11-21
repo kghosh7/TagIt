@@ -10,7 +10,7 @@ public class Command {
 
     private CommandInfo commandInfo;
     private List<SubCommand> subCommands;
-    private CommandTypeEnum type = CommandTypeEnum.ACTION;
+    private CommandBehaviorEnum behavior = CommandBehaviorEnum.ACTION;
 
     public CommandInfo getCommandInfo() {
         return commandInfo;
@@ -28,11 +28,11 @@ public class Command {
         this.subCommands = subCommands;
     }
 
-    public CommandTypeEnum getType() {
-        return type;
+    public CommandBehaviorEnum getBehavior() {
+        return behavior;
     }
 
-    public void setType(CommandTypeEnum type) {
-        this.type = type;
+    public void setBehavior(CommandBehaviorEnum behavior) {
+        this.behavior = behavior;
     }
 }

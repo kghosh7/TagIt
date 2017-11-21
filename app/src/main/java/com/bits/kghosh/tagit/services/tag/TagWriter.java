@@ -1,5 +1,6 @@
 package com.bits.kghosh.tagit.services.tag;
 
+import android.content.Context;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -25,9 +26,11 @@ import java.util.List;
 public class TagWriter {
 
     private CommandServiceFactory factory;
+    private Context context;
 
-    public TagWriter() {
-        this.factory = new CommandServiceFactory();
+    public TagWriter(Context context) {
+        this.context = context;
+        this.factory = new CommandServiceFactory(context);
     }
 
     public boolean write(Ndef ndef, Tag tag) throws InvalidTagDataException {

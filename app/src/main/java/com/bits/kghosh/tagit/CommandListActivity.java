@@ -1,19 +1,28 @@
 package com.bits.kghosh.tagit;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.bits.kghosh.tagit.command.SystemCommandHelper;
+import com.bits.kghosh.tagit.fragments.UrlFragment;
 import com.bits.kghosh.tagit.list.CommandListAdapter;
 import com.bits.kghosh.tagit.list.listeners.RecyclerItemClickListener;
 import com.bits.kghosh.tagit.model.Command;
-import com.bits.kghosh.tagit.model.CommandTypeEnum;
+import com.bits.kghosh.tagit.model.CommandBehaviorEnum;
 import com.bits.kghosh.tagit.services.dto.CommandDTO;
 
 import java.util.ArrayList;
@@ -22,10 +31,18 @@ import java.util.List;
 
 public class CommandListActivity extends AppCompatActivity {
 
+    private static class RequestCode {
+        static int PICK_CONTACT = 0;
+        static int URL_LINK = 1;
+    }
+
     private RecyclerView recyclerView;
     private CommandListAdapter mAdapter;
-    private CommandTypeEnum commandType = CommandTypeEnum.TASK;
+    private CommandBehaviorEnum commandType = CommandBehaviorEnum.TASK;
     private List<String> exclusionsCommands = new ArrayList<>();
+
+    private Command clickedItem = null;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +69,14 @@ public class CommandListActivity extends AppCompatActivity {
     private void initialize() {
         String type = getIntent().getStringExtra("TYPE");
         try {
-            this.commandType = CommandTypeEnum.valueOf(type);
+            this.commandType = CommandBehaviorEnum.valueOf(type);
         } catch (IllegalArgumentException iae) {
-            this.commandType = CommandTypeEnum.TASK;
+            this.commandType = CommandBehaviorEnum.TASK;
         }
 
-        final String[] exclusionses = getIntent().getStringArrayExtra("EXCLUSIONS");
-        if (exclusionses != null) {
-            this.exclusionsCommands = Arrays.asList(exclusionses);
+        final String[] exclusions = getIntent().getStringArrayExtra("EXCLUSIONS");
+        if (exclusions != null) {
+            this.exclusionsCommands = Arrays.asList(exclusions);
         }
     }
 
@@ -68,20 +85,63 @@ public class CommandListActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(CommandListActivity.this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Command item = mAdapter.getItem(position);
-                CommandDTO commandDTO = CommandDTO.getInstance();
-                commandDTO.setCommandToTransfer(item);
-
-/*                Intent resultIntent = new Intent();
-                setResult(Activity.RESULT_OK, resultIntent);*/
-                setResult(Activity.RESULT_OK);
-                finish();
+                clickedItem = mAdapter.getItem(position);
+                takeCommandSubcommandAction();
             }
         }));
     }
 
+    private void takeCommandSubcommandAction() {
+
+        if (clickedItem != null) {
+            switch (clickedItem.getCommandInfo().getCommand()) {
+                case BUSINESS_CARD:
+                    Intent intentContact = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                    startActivityForResult(intentContact, RequestCode.PICK_CONTACT);
+                    break;
+                case LINK:
+//                    Intent intentLink = new Intent(CommandListActivity.this, UrlFragment.class);
+//                    Fragment urlFragment = getFragmentManager().findFragmentById(R.layout.fragment_url);
+//                    startActivityFromFragment(urlFragment, intentLink, RequestCode.URL_LINK);
+                    DialogFragment dialogFragment = new UrlFragment();
+                    //dialogFragment.getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    dialogFragment.show(getSupportFragmentManager(), "Dialog");
+                    break;
+                default:
+                    CommandDTO commandDTO = CommandDTO.getInstance();
+                    commandDTO.setCommandToTransfer(clickedItem);
+                    setResult(Activity.RESULT_OK);
+                    finish();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == RequestCode.PICK_CONTACT) {
+            String phoneNo = null;
+
+            Uri uri = data.getData();
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+            if (cursor.moveToFirst()) {
+                int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                phoneNo = cursor.getString(phoneIndex);
+                clickedItem.getSubCommands().get(0).setValue(phoneNo);
+                CommandDTO commandDTO = CommandDTO.getInstance();
+                commandDTO.setCommandToTransfer(clickedItem);
+            }
+            cursor.close();
+
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
+    }
+
     private List<Command> getCommandsToShow() {
-        SystemCommandHelper commandHelper = new SystemCommandHelper();
+        SystemCommandHelper commandHelper = new SystemCommandHelper(getApplicationContext());
         List<Command> commands = commandHelper.getAllSystemCommands(this.commandType);
 
         List<Command> commandsToShow = new ArrayList<>();
@@ -99,7 +159,7 @@ public class CommandListActivity extends AppCompatActivity {
         return commandsToShow;
     }
 
-    private String getPageTitle(CommandTypeEnum commandType) {
+    private String getPageTitle(CommandBehaviorEnum commandType) {
         switch (commandType) {
             case ACTION:
                 return "Pick an action";

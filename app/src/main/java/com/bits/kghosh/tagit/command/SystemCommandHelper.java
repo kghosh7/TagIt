@@ -1,11 +1,12 @@
 package com.bits.kghosh.tagit.command;
 
+import android.content.Context;
+
 import com.bits.kghosh.tagit.R;
 import com.bits.kghosh.tagit.model.Command;
+import com.bits.kghosh.tagit.model.CommandBehaviorEnum;
 import com.bits.kghosh.tagit.model.CommandInfo;
-import com.bits.kghosh.tagit.model.CommandTypeEnum;
 import com.bits.kghosh.tagit.model.CommandsEnum;
-import com.bits.kghosh.tagit.model.SubCommand;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -22,9 +23,11 @@ public class SystemCommandHelper {
     private Map<CommandsEnum, Command> actionsMap = new LinkedHashMap<>();
 
     private CommandServiceFactory serviceFactory;
+    private Context context;
 
-    public SystemCommandHelper() {
-        serviceFactory = new CommandServiceFactory();
+    public SystemCommandHelper(Context context) {
+        this.context = context;
+        this.serviceFactory = new CommandServiceFactory(context);
         initialize();
     }
 
@@ -34,7 +37,7 @@ public class SystemCommandHelper {
         return commands;
     }
 
-    public List<Command> getAllSystemCommands(CommandTypeEnum type) {
+    public List<Command> getAllSystemCommands(CommandBehaviorEnum type) {
         switch (type) {
             case ACTION:
                 return new ArrayList<>(actionsMap.values());
@@ -112,244 +115,150 @@ public class SystemCommandHelper {
     }
 
     private Command getAirplanceCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Airplane Mode");
-        commandInfo.setCommand(CommandsEnum.AIRPLANE_MODE);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Airplane Mode",
+                CommandsEnum.AIRPLANE_MODE,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getBluetoothCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Bluetooth");
-        commandInfo.setCommand(CommandsEnum.BLUETOOTH);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Bluetooth",
+                CommandsEnum.BLUETOOTH,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getBrightnessCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Brightness");
-        commandInfo.setCommand(CommandsEnum.BRIGHTNESS);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Brightness",
+                CommandsEnum.BRIGHTNESS,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getBusinessCardCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Contact");
-        commandInfo.setCommand(CommandsEnum.BUSINESS_CARD);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-
-        return command;
+        return this.buildCommand(
+                "Contact",
+                CommandsEnum.BUSINESS_CARD,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getEmailCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Email");
-        commandInfo.setCommand(CommandsEnum.EMAIL);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-        return command;
+        return this.buildCommand(
+                "Email",
+                CommandsEnum.EMAIL,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getGeolocationCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Location");
-        commandInfo.setCommand(CommandsEnum.GEOLOCATION);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-        return command;
+        return this.buildCommand(
+                "Location",
+                CommandsEnum.GEOLOCATION,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getGooglePlayLaunchCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Google Play");
-        commandInfo.setCommand(CommandsEnum.GOOGLE_PLAY);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-        return command;
+        return this.buildCommand(
+                "Google Play",
+                CommandsEnum.GOOGLE_PLAY,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getLaunchApplicationCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Launch Application");
-        commandInfo.setCommand(CommandsEnum.LAUNCH_APPLICATION);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Launch Application",
+                CommandsEnum.LAUNCH_APPLICATION,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getLaunchMusicCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Launch Music Player");
-        commandInfo.setCommand(CommandsEnum.LAUNCH_MUSIC_PLAYER);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Launch Music Player",
+                CommandsEnum.LAUNCH_MUSIC_PLAYER,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getLinkCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Website URL");
-        commandInfo.setCommand(CommandsEnum.LINK);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-
-        return command;
+        return this.buildCommand(
+                "Website URL",
+                CommandsEnum.LINK,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getPlainTextCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Text");
-        commandInfo.setCommand(CommandsEnum.PLAIN_TEXT);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-        return command;
+        return this.buildCommand(
+                "Text",
+                CommandsEnum.PLAIN_TEXT,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getSMSCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("SMS");
-        commandInfo.setCommand(CommandsEnum.SMS);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.ACTION);
-        return command;
+        return this.buildCommand(
+                "SMS",
+                CommandsEnum.SMS,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.ACTION);
     }
 
     private Command getSystemVolumeCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("System Volume");
-        commandInfo.setCommand(CommandsEnum.SYSTEM_VOLUME);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "System Volume",
+                CommandsEnum.SYSTEM_VOLUME,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getWifiCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Wifi");
-        commandInfo.setCommand(CommandsEnum.WIFI);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Wifi",
+                CommandsEnum.WIFI,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getMobileDataCommand() {
-        Command command = new Command();
-
-        CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Mobile Data");
-        commandInfo.setCommand(CommandsEnum.MOBILE_DATA);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
-        command.setCommandInfo(commandInfo);
-
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
-        return command;
+        return this.buildCommand(
+                "Mobile Data",
+                CommandsEnum.MOBILE_DATA,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
     }
 
     private Command getBatterySaverCommand() {
+        return this.buildCommand(
+                "Battery Saver",
+                CommandsEnum.BATTERY_SAVER,
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.",
+                CommandBehaviorEnum.TASK);
+    }
+
+    private Command buildCommand(String commandName, CommandsEnum commandType,
+                                 String commandDescription, CommandBehaviorEnum commandBehavior) {
         Command command = new Command();
 
+        command.setBehavior(commandBehavior);
+
         CommandInfo commandInfo = new CommandInfo();
-        commandInfo.setName("Battery Saver");
-        commandInfo.setCommand(CommandsEnum.BATTERY_SAVER);
-        commandInfo.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque.");
+        commandInfo.setName(commandName);
+        commandInfo.setCommand(commandType);
+        commandInfo.setDescription(commandDescription);
         command.setCommandInfo(commandInfo);
 
-        final CommandService commandService = this.serviceFactory.getCommandService(commandInfo.getCommand());
-        command.setSubCommands(commandService.getSubCommands());
-        command.setType(CommandTypeEnum.TASK);
+        final CommandService commandService = this.serviceFactory.getCommandService(commandType);
+        if (commandService != null) {
+            command.setSubCommands(commandService.getSubCommands());
+        }
+
         return command;
     }
 
